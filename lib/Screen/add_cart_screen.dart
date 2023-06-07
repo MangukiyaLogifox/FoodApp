@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/Core/app_color.dart';
+import 'package:food_app/Screen/dash_board_Screen.dart';
 import 'package:food_app/Screen/menu_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
@@ -13,6 +15,7 @@ class AddCartScreen extends StatefulWidget {
 
 class _AddCartScreenState extends State<AddCartScreen> {
   int increment = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -230,8 +233,10 @@ class _AddCartScreenState extends State<AddCartScreen> {
     return Center(
       child: TextButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MenuScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const DashBoardScreen()));
           },
           child: Text(
             'Back to Menu',

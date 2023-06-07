@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/Core/app_color.dart';
-import 'package:food_app/Screen/bottom_navigation.dart';
+import 'package:food_app/Screen/dash_board_Screen.dart';
 import 'package:sizer/sizer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -65,7 +65,7 @@ class _SpleshScreenState extends State<SpleshScreen> {
             padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 7.w)),
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => BottomNavigation()));
+              MaterialPageRoute(builder: (context) => const DashBoardScreen()));
         },
         child: Text(
           'Get Started',
