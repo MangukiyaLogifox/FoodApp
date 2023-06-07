@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/Core/app_color.dart';
 import 'package:food_app/Screen/detail_screen.dart';
+import 'package:food_app/model/product_model.dart';
 import 'package:sizer/sizer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -13,30 +16,49 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  var list = [];
+  Future getData() async {
+    await FirebaseFirestore.instance.collection("FoodApp").get().then((value) {
+      value.docs.forEach((element) {
+        setState(() {
+          list.add(ProductModel(
+              image: element.data()['image'], name: element.data()['name']));
+        });
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.bg,
       body: Padding(
-        padding: EdgeInsets.only(left: 7.w, top: 5.h, right: 7.w),
-        child: SingleChildScrollView(
-          physics: const NeverScrollableScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 1.h),
-              header(),
-              SizedBox(height: 3.h),
-              textFormField(),
-              SizedBox(height: 2.h),
-              listviwe(),
-              cText('Promotions'),
-              offer(),
-              SizedBox(height: 1.h),
-              cText('Popular'),
-              SizedBox(height: 1.h),
-              popular(),
-            ],
-          ),
+        padding: EdgeInsets.only(
+          left: 7.w,
+          top: 5.h,
+          right: 7.w,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 1.h),
+            header(),
+            SizedBox(height: 3.h),
+            textFormField(),
+            SizedBox(height: 2.h),
+            listviwe(),
+            cText('Promotions'),
+            offer(),
+            SizedBox(height: 1.h),
+            cText('Popular'),
+            SizedBox(height: 1.h),
+            popular(),
+          ],
         ),
       ),
     );
@@ -98,7 +120,7 @@ class _MenuScreenState extends State<MenuScreen> {
       height: 15.h,
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: 5,
+        itemCount: list.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           return Padding(
@@ -106,21 +128,36 @@ class _MenuScreenState extends State<MenuScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  padding: EdgeInsets.all(5.sp),
-                  decoration: BoxDecoration(
-                      color: AppColor.white60,
-                      borderRadius: BorderRadius.circular(15)),
-                  height: 9.h,
-                  child: Image.asset(
-                    'assets/image/Splesh.png',
+                // Container(
+                //   padding: EdgeInsets.all(5.sp),
+                //   decoration: BoxDecoration(
+                //       color: AppColor.white60,
+                //       borderRadius: BorderRadius.circular(15)),
+                //   height: 9.h,
+                //   child: Image.network(
+                //     list[index].image,
+                //     width: 60,
+                //   ),
+                // ),
+                CachedNetworkImage(
+                  imageUrl: list[index].image,
+                  imageBuilder: (context, imageProvider) => Container(
+                    padding: EdgeInsets.all(5.sp),
+                    height: 8.h,
+                    width: 18.5.w,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(image: imageProvider),
+                        color: AppColor.white60,
+                        borderRadius: BorderRadius.circular(15)),
                   ),
+                  // placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
                 SizedBox(
                   height: 1.h,
                 ),
                 Text(
-                  'All',
+                  list[index].name,
                   style: GoogleFonts.poppins(
                       color: AppColor.grey,
                       fontWeight: FontWeight.w400,
@@ -185,16 +222,17 @@ class _MenuScreenState extends State<MenuScreen> {
                 SizedBox(height: 0.2.h),
               ],
             ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Image.asset(
-                'assets/image/Splesh.png',
-                height: 11.h,
-                width: 11.h,
-              ),
+            // Card(
+            //   shape: RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.circular(15),
+            //   ),
+            //   child:
+            Image.asset(
+              'assets/image/French-fries.png',
+              height: 11.h,
+              width: 11.h,
             ),
+            // ),
           ],
         ),
       ),
@@ -212,84 +250,80 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   Widget popular() {
-    return SizedBox(
-      // color: Colors.black,
-      height: 27.h,
-      child: GridView.builder(
-          itemCount: 4,
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            mainAxisExtent: 250.h,
-            crossAxisCount: 2,
-            crossAxisSpacing: 10.w,
-          ),
-          itemBuilder: (context, index) => Column(
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const DetailScreen())),
-                    child: Container(
-                      padding: EdgeInsets.zero,
-                      width: 25.h,
-                      height: 22.h,
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(25),
-                          gradient: const LinearGradient(colors: [
-                            Color(0xFfEBE8E8),
-                            Color(0xFFEFEEEE),
-                          ])),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 0.5.h),
-                          Container(
-                            height: 13.h,
-                            width: 12.h,
-                            decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                    image:
-                                        AssetImage('assets/image/Splesh.png'))),
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(0.0),
+        child: GridView.builder(
+            shrinkWrap: true,
+            itemCount: 4,
+            padding: EdgeInsets.zero,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisSpacing: 30,
+                crossAxisCount: 2,
+                crossAxisSpacing: 50,
+                childAspectRatio: 2 / 2.5),
+            itemBuilder: (context, index) => InkWell(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DetailScreen())),
+                  child: Container(
+                    width: 10.w,
+                    // height: 17.h,
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(25),
+                        gradient: const LinearGradient(colors: [
+                          Color(0xFfEBE8E8),
+                          Color(0xFFEFEEEE),
+                        ])),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 1.h),
+                        Container(
+                          height: 11.h,
+                          width: 12.h,
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image:
+                                      AssetImage('assets/image/Splesh.png'))),
+                        ),
+                        Text(
+                          'Breef Burger',
+                          style: GoogleFonts.poppins(
+                              color: AppColor.black,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 15.sp),
+                        ),
+                        SizedBox(height: 1.5.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 7.w),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '\$24',
+                                style: GoogleFonts.poppins(
+                                    color: AppColor.yellow,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15.sp),
+                              ),
+                              CircleAvatar(
+                                  backgroundColor: AppColor.green,
+                                  radius: 1.5.h,
+                                  child: const Center(
+                                      child: Icon(
+                                    Icons.add,
+                                    color: AppColor.white,
+                                  ))),
+                            ],
                           ),
-                          Text(
-                            'Breef Burger',
-                            style: GoogleFonts.poppins(
-                                color: AppColor.black,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15.sp),
-                          ),
-                          SizedBox(height: 1.h),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 7.w),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '\$24',
-                                  style: GoogleFonts.poppins(
-                                      color: AppColor.yellow,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15.sp),
-                                ),
-                                CircleAvatar(
-                                    backgroundColor: AppColor.green,
-                                    radius: 1.5.h,
-                                    child: const Center(
-                                        child: Icon(
-                                      Icons.add,
-                                      color: AppColor.white,
-                                    ))),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              )),
+                  ),
+                )),
+      ),
     );
   }
 }

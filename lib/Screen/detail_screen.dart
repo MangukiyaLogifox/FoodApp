@@ -44,7 +44,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Widget productdetail() {
     return Container(
-      height: 51.5.h,
+      height: 54.4.h,
       width: double.infinity,
       decoration: const BoxDecoration(
           color: AppColor.white,

@@ -4,14 +4,14 @@ import 'package:food_app/Screen/add_cart_screen.dart';
 import 'package:food_app/Screen/menu_screen.dart';
 import 'package:sizer/sizer.dart';
 
-class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({super.key});
+class DashBoardScreen extends StatefulWidget {
+  const DashBoardScreen({super.key});
 
   @override
-  State<BottomNavigation> createState() => BottomNavigationState();
+  State<DashBoardScreen> createState() => _DashBoardScreenState();
 }
 
-class BottomNavigationState extends State<BottomNavigation> {
+class _DashBoardScreenState extends State<DashBoardScreen> {
   int _curruntindex = 0;
   static const List _pages = [
     MenuScreen(),
