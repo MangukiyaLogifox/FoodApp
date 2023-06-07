@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "47729247717",
+    "project_id": "food-app-6e21c",
+    "storage_bucket": "food-app-6e21c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:47729247717:android:db60358e69a250a5abdb0c",
+        "android_client_info": {
+          "package_name": "com.logifox.food_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "47729247717-v3i9g6mispfit1bl979t6pbuafu99r1s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUKmuC4eXGwwIXCnt-og8c0SobQVBvjRY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "47729247717-v3i9g6mispfit1bl979t6pbuafu99r1s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

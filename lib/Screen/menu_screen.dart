@@ -1,0 +1,295 @@
+import 'package:flutter/material.dart';
+import 'package:food_app/Core/app_color.dart';
+import 'package:food_app/Screen/detail_screen.dart';
+import 'package:sizer/sizer.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class MenuScreen extends StatefulWidget {
+  const MenuScreen({super.key});
+
+  @override
+  State<MenuScreen> createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends State<MenuScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColor.bg,
+      body: Padding(
+        padding: EdgeInsets.only(left: 7.w, top: 5.h, right: 7.w),
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 1.h),
+              header(),
+              SizedBox(height: 3.h),
+              textFormField(),
+              SizedBox(height: 2.h),
+              listviwe(),
+              cText('Promotions'),
+              offer(),
+              SizedBox(height: 1.h),
+              cText('Popular'),
+              SizedBox(height: 1.h),
+              popular(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget header() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Menu',
+          style: GoogleFonts.poppins(
+              color: AppColor.black,
+              fontWeight: FontWeight.w400,
+              fontSize: 35.sp),
+        ),
+        CircleAvatar(
+          radius: 21.sp,
+          child: Image.asset(
+            'assets/image/profile.png',
+            fit: BoxFit.cover,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget textFormField() {
+    return TextFormField(
+      cursorColor: AppColor.grey,
+      decoration: InputDecoration(
+        prefixIcon: Icon(
+          Icons.search,
+          color: AppColor.grey,
+          size: 3.h,
+        ),
+        hintText: 'Search',
+        hintStyle: GoogleFonts.poppins(
+            color: AppColor.grey, fontWeight: FontWeight.w400, fontSize: 18.sp),
+        contentPadding: EdgeInsets.symmetric(vertical: 1.8.h, horizontal: 6.w),
+        fillColor: AppColor.white60,
+        filled: true,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: const BorderSide(
+            color: AppColor.white60,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: const BorderSide(color: Colors.white)),
+      ),
+    );
+  }
+
+  Widget listviwe() {
+    return SizedBox(
+      // color: AppColor.darkIndigo,
+      height: 15.h,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: 5,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.only(left: 2.5.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(5.sp),
+                  decoration: BoxDecoration(
+                      color: AppColor.white60,
+                      borderRadius: BorderRadius.circular(15)),
+                  height: 9.h,
+                  child: Image.asset(
+                    'assets/image/Splesh.png',
+                  ),
+                ),
+                SizedBox(
+                  height: 1.h,
+                ),
+                Text(
+                  'All',
+                  style: GoogleFonts.poppins(
+                      color: AppColor.grey,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14.sp),
+                )
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget offer() {
+    return Container(
+      height: 14.5.h,
+      width: 90.w,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: const LinearGradient(begin: Alignment.topCenter, colors: [
+            AppColor.blue,
+            AppColor.blue1,
+          ])),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 3.0.w),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(height: 0.2.h),
+                Text(
+                  '''Today's offers''',
+                  style: GoogleFonts.poppins(
+                      color: AppColor.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 15.sp),
+                ),
+                Text(
+                  'Free box of fries',
+                  style: GoogleFonts.poppins(
+                      color: AppColor.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 19.sp),
+                ),
+                Flexible(
+                  child: SizedBox(
+                    width: 53.w,
+                    // color: Colors.red,
+                    child: Text(
+                      'On all order above \$150',
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                          color: AppColor.white,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 15.sp),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 0.2.h),
+              ],
+            ),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Image.asset(
+                'assets/image/Splesh.png',
+                height: 11.h,
+                width: 11.h,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget cText(
+    String text,
+  ) {
+    return Text(
+      text,
+      style: GoogleFonts.poppins(
+          color: AppColor.black, fontWeight: FontWeight.w400, fontSize: 25.sp),
+    );
+  }
+
+  Widget popular() {
+    return SizedBox(
+      // color: Colors.black,
+      height: 27.h,
+      child: GridView.builder(
+          itemCount: 4,
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            mainAxisExtent: 250.h,
+            crossAxisCount: 2,
+            crossAxisSpacing: 10.w,
+          ),
+          itemBuilder: (context, index) => Column(
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const DetailScreen())),
+                    child: Container(
+                      padding: EdgeInsets.zero,
+                      width: 25.h,
+                      height: 22.h,
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(25),
+                          gradient: const LinearGradient(colors: [
+                            Color(0xFfEBE8E8),
+                            Color(0xFFEFEEEE),
+                          ])),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 0.5.h),
+                          Container(
+                            height: 13.h,
+                            width: 12.h,
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    image:
+                                        AssetImage('assets/image/Splesh.png'))),
+                          ),
+                          Text(
+                            'Breef Burger',
+                            style: GoogleFonts.poppins(
+                                color: AppColor.black,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 15.sp),
+                          ),
+                          SizedBox(height: 1.h),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 7.w),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '\$24',
+                                  style: GoogleFonts.poppins(
+                                      color: AppColor.yellow,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.sp),
+                                ),
+                                CircleAvatar(
+                                    backgroundColor: AppColor.green,
+                                    radius: 1.5.h,
+                                    child: const Center(
+                                        child: Icon(
+                                      Icons.add,
+                                      color: AppColor.white,
+                                    ))),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              )),
+    );
+  }
+}
