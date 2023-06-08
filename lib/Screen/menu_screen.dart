@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/Common/common_image.dart';
 import 'package:food_app/Core/app_color.dart';
 import 'package:food_app/Screen/detail_screen.dart';
+import 'package:food_app/model/product_category_model.dart';
 import 'package:food_app/model/product_model.dart';
 import 'package:sizer/sizer.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,20 +17,52 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
+  String productName = 'All';
+  int tappedIndex = 0;
+
   @override
   void initState() {
+    getProductData();
+    getProductCategoryData(productName);
     super.initState();
-    getData();
+    tappedIndex = 0;
   }
 
-  var list = [];
-  Future getData() async {
+  var productCatogery = [];
+  Future getProductData() async {
     await FirebaseFirestore.instance.collection("FoodApp").get().then((value) {
       value.docs.forEach((element) {
         setState(() {
-          list.add(ProductModel(
+          productCatogery.add(ProductModel(
               image: element.data()['image'], name: element.data()['name']));
         });
+      });
+    });
+  }
+
+  var productCatogeryList = <ProductCategoeryModel>[];
+  Future getProductCategoryData(String productName) async {
+    await FirebaseFirestore.instance
+        .collection("FoodApp")
+        .doc(productName.toString())
+        .collection(productName.toString())
+        .get()
+        .then((value) {
+      print("VALUE:::::::::::${value.docs.length}");
+      productCatogeryList.clear();
+      value.docs.forEach((element) {
+        setState(() {
+          productCatogeryList.add(ProductCategoeryModel(
+            image: element.data()['image'],
+            name: element.data()['name'],
+            price: element.data()['price'],
+            desc: element.data()['desc'],
+            rating: element.data()['rating'],
+            id: element.data()['id'],
+          ));
+        });
+
+        print("LISt :::::${productCatogeryList.length}");
       });
     });
   }
@@ -120,50 +154,47 @@ class _MenuScreenState extends State<MenuScreen> {
       height: 15.h,
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: list.length,
+        itemCount: productCatogeryList.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(left: 2.5.w),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Container(
-                //   padding: EdgeInsets.all(5.sp),
-                //   decoration: BoxDecoration(
-                //       color: AppColor.white60,
-                //       borderRadius: BorderRadius.circular(15)),
-                //   height: 9.h,
-                //   child: Image.network(
-                //     list[index].image,
-                //     width: 60,
-                //   ),
-                // ),
-                CachedNetworkImage(
-                  imageUrl: list[index].image,
-                  imageBuilder: (context, imageProvider) => Container(
-                    padding: EdgeInsets.all(5.sp),
+          return InkWell(
+            focusColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            onTap: () {
+              // setState(() {
+              tappedIndex = index;
+              getProductCategoryData(productCatogery[index].name);
+              // });
+            },
+            child: Padding(
+              padding: EdgeInsets.only(left: 2.5.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CommonImage(
+                    color: tappedIndex == index
+                        ? AppColor.darkIndigo
+                        : AppColor.white60,
                     height: 8.h,
                     width: 18.5.w,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(image: imageProvider),
-                        color: AppColor.white60,
-                        borderRadius: BorderRadius.circular(15)),
+                    image: productCatogery[index].image,
                   ),
-                  // placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                ),
-                SizedBox(
-                  height: 1.h,
-                ),
-                Text(
-                  list[index].name,
-                  style: GoogleFonts.poppins(
-                      color: AppColor.grey,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14.sp),
-                )
-              ],
+                  SizedBox(
+                    height: 1.h,
+                  ),
+                  Text(
+                    productCatogery[index].name,
+                    style: GoogleFonts.poppins(
+                        color: tappedIndex == index
+                            ? AppColor.darkIndigo
+                            : AppColor.grey,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 15.sp),
+                  )
+                ],
+              ),
             ),
           );
         },
@@ -255,7 +286,7 @@ class _MenuScreenState extends State<MenuScreen> {
         padding: const EdgeInsets.all(0.0),
         child: GridView.builder(
             shrinkWrap: true,
-            itemCount: 4,
+            itemCount: productCatogeryList.length,
             padding: EdgeInsets.zero,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 mainAxisSpacing: 30,
@@ -266,7 +297,14 @@ class _MenuScreenState extends State<MenuScreen> {
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const DetailScreen())),
+                          builder: (context) => DetailScreen(
+                                id: productCatogeryList[index].id,
+                                name: productCatogeryList[index].name,
+                                image: productCatogeryList[index].image,
+                                desc: productCatogeryList[index].desc,
+                                price: productCatogeryList[index].price,
+                                rating: productCatogeryList[index].rating,
+                              ))),
                   child: Container(
                     width: 10.w,
                     // height: 17.h,
@@ -280,16 +318,14 @@ class _MenuScreenState extends State<MenuScreen> {
                     child: Column(
                       children: [
                         SizedBox(height: 1.h),
-                        Container(
-                          height: 11.h,
-                          width: 12.h,
-                          decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                  image:
-                                      AssetImage('assets/image/Splesh.png'))),
+                        CommonImage(
+                          height: 10.h,
+                          width: 27.5.w,
+                          image: productCatogeryList[index].image.toString(),
+                          color: AppColor.white60,
                         ),
                         Text(
-                          'Breef Burger',
+                          productCatogeryList[index].name.toString(),
                           style: GoogleFonts.poppins(
                               color: AppColor.black,
                               fontWeight: FontWeight.w400,
@@ -302,7 +338,7 @@ class _MenuScreenState extends State<MenuScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '\$24',
+                                '\$${productCatogeryList[index].price.toString()}',
                                 style: GoogleFonts.poppins(
                                     color: AppColor.yellow,
                                     fontWeight: FontWeight.w600,
