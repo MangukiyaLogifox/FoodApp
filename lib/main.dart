@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/Screen/Splesh_screen.dart';
+import 'package:food_app/Screen/introductione_Screen.dart';
 import 'package:sizer/sizer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,9 +10,9 @@ void main() async {
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
-// 
+//
 // A
-// 
+//
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) {
         return const MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: SpleshScreen(),
+          home: IntroductioneScreen(),
         );
       },
     );

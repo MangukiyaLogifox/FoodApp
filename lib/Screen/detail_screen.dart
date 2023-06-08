@@ -1,17 +1,37 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/Common/common_image.dart';
 import 'package:food_app/Core/app_color.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 
 class DetailScreen extends StatefulWidget {
-  const DetailScreen({super.key});
+  String? image;
+  String? name;
+  int? price;
+  String? desc;
+  String? id;
+  String? rating;
+  DetailScreen(
+      {super.key,
+      this.id,
+      this.name,
+      this.image,
+      this.price,
+      this.desc,
+      this.rating});
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  int increment = 0;
+  List photo = [
+    'assets/image/Rectangle 11.png',
+    'assets/image/Rectangle 13.png',
+    'assets/image/Rectangle 14.png'
+  ];
+  int increment = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,9 +50,20 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Column(
           children: [
             SizedBox(height: 1.h),
-            Image.asset(
-              'assets/image/Splesh.png',
-              height: 22.h,
+            CachedNetworkImage(
+              imageUrl: widget.image.toString(),
+              imageBuilder: (context, imageProvider) => Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(5.sp),
+                height: 22.h,
+                // width: 18.5.w,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.contain),
+                    borderRadius: BorderRadius.circular(15)),
+              ),
+              placeholder: (context, url) =>
+                  CircularProgressIndicator(color: AppColor.lightIndigo),
             ),
             SizedBox(height: 10.2.h),
             productdetail()
@@ -76,7 +107,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         color: AppColor.yellow,
                       ),
                       Text(
-                        '4.8',
+                        widget.rating.toString(),
                         style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 2.8.h,
@@ -86,7 +117,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                 ),
                 Text(
-                  '\$20',
+                  '\$${widget.price.toString()}',
                   style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 2.8.h,
@@ -98,7 +129,7 @@ class _DetailScreenState extends State<DetailScreen> {
             Row(
               children: [
                 Text(
-                  'Beef Burger',
+                  widget.name.toString(),
                   style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w500,
                       fontSize: 2.6.h,
@@ -136,7 +167,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             SizedBox(height: 1.5.h),
             Text(
-              'Big juicy beef burger with cheese, lettuce, tomato, onions and special sauce !',
+              widget.desc.toString(),
               style: GoogleFonts.poppins(fontSize: 2.3.h),
             ),
             SizedBox(height: 1.4.h),
@@ -150,7 +181,7 @@ class _DetailScreenState extends State<DetailScreen> {
               height: 10.h,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: 4,
+                itemCount: photo.length,
                 itemBuilder: (context, index) {
                   return Padding(
                       padding: EdgeInsets.only(left: 0.w, right: 14.w),
@@ -165,7 +196,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Image.asset(
-                                'assets/image/Splesh.png',
+                                photo[index].toString(),
                                 height: 8.h,
                               )),
                           Positioned(
@@ -186,11 +217,6 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
             ),
             SizedBox(height: 1.h),
-            // Container(
-            //   height: 50,
-            //   width: 80,
-            //   decoration: BoxDecoration(color: AppColor.darkIndigo),
-            // )
             Center(
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
