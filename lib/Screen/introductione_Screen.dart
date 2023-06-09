@@ -1,109 +1,154 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:food_app/Core/app_color.dart';
+import 'package:food_app/Screen/splesh_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IntroductioneScreen extends StatefulWidget {
-  const IntroductioneScreen({super.key});
+  bool? _seen;
+  IntroductioneScreen({super.key});
 
   @override
-  State<IntroductioneScreen> createState() => _IntroductioneScreenState();
+  IntroductioneScreenState createState() => IntroductioneScreenState();
 }
 
-class _IntroductioneScreenState extends State<IntroductioneScreen> {
-  var initialPage;
+class IntroductioneScreenState extends State<IntroductioneScreen> {
+  checkFirstSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('seen', true);
+  }
 
   @override
-  void initState() {
-    initialPage = 0;
-    super.initState();
-  }
+  late List<IntroductioneModel> introduction = [
+    IntroductioneModel(
+        image: 'assets/image/food.png',
+        text: 'Quality food',
+        desc:
+            'Food quality is the quality characteristics of food that is acceptedable to consumers.we Provide best Quality food in town.'),
+    IntroductioneModel(
+        image: 'assets/image/availabel.png',
+        text: 'Fast delivery',
+        desc:
+            'We provide the fastest delivery system.we will reach food in your home within 30 minutes.'),
+    IntroductioneModel(
+        image: 'assets/image/24.png',
+        text: '24/7 Service',
+        desc:
+            '24 hours delivery service that you can eat your food anytime when u get hungry.'),
+  ];
 
+  var introductionPage = 0;
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CarouselSlider(
-        items: [
-          commonSlider('assets/image/food.json', 'Order Food'),
-          //2nd Image of Slider
-          commonSlider('assets/image/food.json', 'Choose Online'),
-
-          //3rd Image of Slider
-          commonSlider('assets/image/food.json', 'Free Delivery')
-        ],
-
-        //Slider Container properties
-        options: CarouselOptions(
-            height: 780.0,
-            enlargeCenterPage: true,
-            initialPage: initialPage,
-            autoPlay: false,
-            aspectRatio: 16 / 9,
-            autoPlayCurve: Curves.fastOutSlowIn,
-            enableInfiniteScroll: true,
-            autoPlayAnimationDuration: Duration(milliseconds: 800),
-            viewportFraction: 1,
-            scrollPhysics: const NeverScrollableScrollPhysics()),
-      ),
-    );
-  }
-
-  Widget commonSlider(
-    String image,
-    String text,
-  ) {
-    return Container(
-      margin: EdgeInsets.all(6.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        children: [
-          Lottie.asset(image),
-          SizedBox(height: 6.h),
-          Text(
-            text,
-            style: GoogleFonts.poppins(
-                fontWeight: FontWeight.bold, fontSize: 2.5.h),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: Text(
-              "Recipe contests are like our BID constantly-in-progress dinner party-and you're invited.",
-              style: GoogleFonts.poppins(fontSize: 3.h),
-              textAlign: TextAlign.center,
+      body: Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          colors: [
+            AppColor.scaffold,
+            AppColor.scaffold,
+          ],
+        )),
+        child: Column(
+          children: [
+            SizedBox(height: 15.h),
+            Image.asset(
+              introduction[introductionPage].image.toString(),
+              height: 30.h,
+              width: 70.w,
             ),
-          ),
-          SizedBox(
-            height: 4.h,
-          ),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  padding:
-                      EdgeInsets.symmetric(vertical: 0..h, horizontal: 10.w),
-                  primary: AppColor.darkIndigo),
-              onPressed: () {
-                setState(() {
-                  initialPage = 1;
-
-                  print("PAGE:::::${initialPage}");
-                });
-              },
+            SizedBox(height: 10.h),
+            Text(introduction[introductionPage].text.toString(),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 4.h)),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0.w, vertical: 2.h),
               child: Text(
-                'Next',
-                style: GoogleFonts.poppins(color: Colors.white),
-              )),
-          TextButton(
-              onPressed: () {},
-              child: Text(
-                'Skip',
-                style: TextStyle(color: AppColor.darkIndigo),
-              ))
-        ],
+                introduction[introductionPage].desc.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 2.1.h),
+              ),
+            ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  3,
+                  (index) {
+                    return Padding(
+                      padding: EdgeInsets.only(left: 2.w, top: 3.h),
+                      child: CircleAvatar(
+                        radius: 5,
+                        backgroundColor: introductionPage == index
+                            ? AppColor.darkIndigo
+                            : AppColor.grey,
+                      ),
+                    );
+                  },
+                )),
+            SizedBox(height: 2.h),
+            if (introductionPage != 2) ...[
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: AppColor.darkIndigo,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      padding: EdgeInsets.symmetric(horizontal: 10.w)),
+                  onPressed: () {
+                    setState(() {
+                      if (introductionPage <= 3) introductionPage++;
+                    });
+                  },
+                  child: Text(
+                    'Next',
+                    style: GoogleFonts.poppins(fontSize: 4.w),
+                  )),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    introductionPage = 2;
+                  });
+                },
+                child: Text(
+                  'Skip',
+                  style: GoogleFonts.poppins(
+                      color: AppColor.darkIndigo,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 4.w),
+                ),
+              )
+            ],
+            if (introductionPage == 2) ...[
+              SizedBox(height: 1.5.h),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: AppColor.darkIndigo,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      padding: EdgeInsets.symmetric(horizontal: 10.w)),
+                  onPressed: () {
+                    checkFirstSeen();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SpleshScreen()));
+                  },
+                  child: Text(
+                    'Login',
+                    style: GoogleFonts.poppins(),
+                  )),
+            ]
+          ],
+        ),
       ),
     );
   }
+}
+// onPressed: () => _onIntroEnd(context),
+
+class IntroductioneModel {
+  String? image;
+  String? text;
+  String? desc;
+  IntroductioneModel({this.image, this.text, this.desc});
 }

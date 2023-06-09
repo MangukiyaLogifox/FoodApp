@@ -5,7 +5,7 @@ import 'package:sizer/sizer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SpleshScreen extends StatefulWidget {
-  const SpleshScreen({super.key});
+  late bool _seen;
 
   @override
   State<SpleshScreen> createState() => _SpleshScreenState();

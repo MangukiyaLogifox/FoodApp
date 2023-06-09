@@ -15,4 +15,5 @@ class AppColor {
   static const btn = Color(0xffFFFEFE);
   static const bg = Color(0xFFF5F5F5);
   static const gre = Color(0xFF6F6D6D);
+  static const scaffold = Color(0xFFFFDEF7);
 }
