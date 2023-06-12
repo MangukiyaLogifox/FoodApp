@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:food_app/Screen/Splesh_screen.dart';
+import 'package:food_app/Core/app_color.dart';
 import 'package:food_app/Screen/introductione_Screen.dart';
 import 'package:food_app/Screen/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 bool? _seen;
 
@@ -31,8 +30,13 @@ class _MyAppState extends State<MyApp> {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return MaterialApp(
+          theme: ThemeData(
+            textSelectionTheme: TextSelectionThemeData(
+              cursorColor: AppColor.darkIndigo,
+            ),
+          ),
           debugShowCheckedModeBanner: false,
-          home: _seen == true ? LoginScren() : IntroductioneScreen(),
+          home: _seen == true ? const LoginScren() : IntroductioneScreen(),
         );
       },
     );
