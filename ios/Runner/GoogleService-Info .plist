@@ -6,6 +6,8 @@
 	<string>47729247717-idoqrkbtc1rho376tvthc5petaak6gor.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
 	<string>com.googleusercontent.apps.47729247717-idoqrkbtc1rho376tvthc5petaak6gor</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>47729247717-699sem6m1dmrkt84kievj9jmgj2gj00g.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAyK70HrKRkkis4HgJxzpE2ofzQZNNujqY</string>
 	<key>GCM_SENDER_ID</key>
@@ -30,5 +32,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:47729247717:ios:1f41360c5a28d0ffabdb0c</string>
+	<key>DATABASE_URL</key>
+	<string>https://food-app-6e21c-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>

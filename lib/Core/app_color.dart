@@ -9,6 +9,7 @@ class AppColor {
   static const black = Colors.black;
   static const red = Colors.red;
   static const green = Colors.green;
+  static const login = Color.fromRGBO(251, 192, 45, 1);
   static const blue = Color(0xFF9577F2);
   static const blue1 = Color(0xFFAB93F7);
   static const yellow = Color(0xFfC9AA05);
