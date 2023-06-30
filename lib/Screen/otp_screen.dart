@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+// ignore: unused_import
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import 'package:sizer/sizer.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 
+// ignore: must_be_immutable
 class OtpScreen extends StatefulWidget {
   OtpScreen({super.key, this.number});
   String? number;
@@ -19,6 +21,7 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   @override
+  // ignore: override_on_non_overriding_member
   OtpFieldController otp = OtpFieldController();
   var temp;
   final bool autoFocus = false;
@@ -131,32 +134,7 @@ class _OtpScreenState extends State<OtpScreen> {
     );
     await auth.signInWithCredential(credential);
 
-    Navigator.push(
+    Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => SpleshScreen()));
   }
-
-  // FirebaseAuthPlatform authPlatform = FirebaseAuthPlatform.instanceFor(
-  //   app: Firebase.apps.first,
-  //   pluginConstants: {},
-  // );
-// Wait for the user to complete the reCAPTCHA & for an SMS code to be sent.
-  // ConfirmationResult confirmationResult =
-  //     await auth.signInWithPhoneNumber(widget.number.toString());
-  // RecaptchaVerifier(
-  //   onSuccess: () => print('reCAPTCHA Completed!'),
-  //   onError: (FirebaseAuthException error) => print(error),
-  //   onExpired: () => print('reCAPTCHA Expired!'),
-  //   auth: FirebaseAuthPlatform.instance,
-  // );
-  // ConfirmationResult confirmationResult = await auth.signInWithPhoneNumber(
-  //     widget.number.toString(),
-  //     RecaptchaVerifier(
-  //       container: 'recaptcha',
-  //       size: RecaptchaVerifierSize.compact,
-  //       theme: RecaptchaVerifierTheme.dark,
-  //       auth: FirebaseAuthPlatform.instance,
-  //     ));
-  // UserCredential userCredential = await confirmationResult.confirm(pin);
-
-  // }
 }

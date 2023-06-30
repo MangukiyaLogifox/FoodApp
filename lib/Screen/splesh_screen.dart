@@ -4,7 +4,9 @@ import 'package:food_app/Screen/dash_board_Screen.dart';
 import 'package:sizer/sizer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+// ignore: must_be_immutable
 class SpleshScreen extends StatefulWidget {
+  // ignore: unused_field
   late bool _seen;
 
   @override
@@ -64,7 +66,7 @@ class _SpleshScreenState extends State<SpleshScreen> {
             primary: AppColor.white,
             padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 7.w)),
         onPressed: () {
-          Navigator.push(context,
+          Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const DashBoardScreen()));
         },
         child: Text(

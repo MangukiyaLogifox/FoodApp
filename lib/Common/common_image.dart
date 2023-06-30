@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+// ignore: unused_import
 import 'package:sizer/sizer.dart';
 
+// ignore: must_be_immutable
 class CommonImage extends StatelessWidget {
   var height;
   var width;
@@ -12,6 +14,7 @@ class CommonImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: height,
+      alignment: Alignment.center,
       width: width,
       padding: const EdgeInsets.all(7),
       decoration: BoxDecoration(

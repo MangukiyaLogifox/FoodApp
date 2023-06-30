@@ -8,6 +8,7 @@ import 'package:sizer/sizer.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 var dialCode = '+91';
+bool? _seen;
 
 class LoginScren extends StatefulWidget {
   const LoginScren({super.key});
@@ -31,6 +32,7 @@ class _LoginScrenState extends State<LoginScren> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Form(
         key: formKey,
         child: Column(
@@ -162,9 +164,6 @@ class _LoginScrenState extends State<LoginScren> {
       ),
     );
   }
-//
-//
-//
 
   _verifyPhone() async {
     await FirebaseAuth.instance.verifyPhoneNumber(
@@ -193,7 +192,6 @@ class _LoginScrenState extends State<LoginScren> {
                   MaterialPageRoute(
                       builder: (context) =>
                           OtpScreen(number: verificationId))));
-
             print(
                 "calll::::::::::::::::::::::cfs4dqs56cf4s5d4fc5s4c5f::::::::::::${verificationId}");
           });

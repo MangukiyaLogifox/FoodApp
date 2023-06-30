@@ -5,10 +5,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class IntroductioneScreen extends StatefulWidget {
-  bool? _seen;
-  IntroductioneScreen({super.key});
+import 'login_screen.dart';
 
+bool? _seen;
+
+// ignore: must_be_immutable
+class IntroductioneScreen extends StatefulWidget {
+  // ignore: unused_field
+
+  IntroductioneScreen({super.key});
   @override
   IntroductioneScreenState createState() => IntroductioneScreenState();
 }
@@ -20,6 +25,7 @@ class IntroductioneScreenState extends State<IntroductioneScreen> {
   }
 
   @override
+  // ignore: override_on_non_overriding_member
   late List<IntroductioneModel> introduction = [
     IntroductioneModel(
         image: 'assets/image/food.png',
@@ -131,7 +137,9 @@ class IntroductioneScreenState extends State<IntroductioneScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SpleshScreen()));
+                            builder: (context) => _seen == true
+                                ? SpleshScreen()
+                                : const LoginScren()));
                   },
                   child: Text(
                     'Login',

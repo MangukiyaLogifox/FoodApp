@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+// ignore: unused_import
 import 'package:food_app/Common/common_image.dart';
 import 'package:food_app/Core/app_color.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 
+// ignore: must_be_immutable
 class DetailScreen extends StatefulWidget {
   String? image;
   String? name;
@@ -65,7 +67,7 @@ class _DetailScreenState extends State<DetailScreen> {
               placeholder: (context, url) =>
                   CircularProgressIndicator(color: AppColor.lightIndigo),
             ),
-            SizedBox(height: 10.2.h),
+            Spacer(),
             productdetail()
           ],
         ),
@@ -75,7 +77,6 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Widget productdetail() {
     return Container(
-      height: 54.4.h,
       width: double.infinity,
       decoration: const BoxDecoration(
           color: AppColor.white,
@@ -231,7 +232,8 @@ class _DetailScreenState extends State<DetailScreen> {
                     style: GoogleFonts.poppins(
                         fontSize: 3.h, fontWeight: FontWeight.w600),
                   )),
-            )
+            ),
+            SizedBox(height: 1.h),
           ],
         ),
       ),

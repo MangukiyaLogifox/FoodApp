@@ -6,8 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-bool? _seen;
+import 'Screen/menu_screen.dart';
 
+bool? _seen;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -16,7 +17,6 @@ void main() async {
   runApp(const MyApp());
 }
 
-//
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -30,14 +30,14 @@ class _MyAppState extends State<MyApp> {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return MaterialApp(
-          theme: ThemeData(
-            textSelectionTheme: TextSelectionThemeData(
-              cursorColor: AppColor.darkIndigo,
+            theme: ThemeData(
+              textSelectionTheme: TextSelectionThemeData(
+                cursorColor: AppColor.darkIndigo,
+              ),
             ),
-          ),
-          debugShowCheckedModeBanner: false,
-          home: _seen == true ? const LoginScren() : IntroductioneScreen(),
-        );
+            debugShowCheckedModeBanner: false,
+            home: _seen == true ? const LoginScren() : IntroductioneScreen());
+        // MenuScreen());
       },
     );
   }

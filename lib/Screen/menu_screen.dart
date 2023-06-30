@@ -1,3 +1,4 @@
+// ignore: unused_import
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:food_app/model/product_category_model.dart';
 import 'package:food_app/model/product_model.dart';
 import 'package:sizer/sizer.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+bool seen = false;
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -61,7 +64,6 @@ class _MenuScreenState extends State<MenuScreen> {
             id: element.data()['id'],
           ));
         });
-
         print("LISt :::::${productCatogeryList.length}");
       });
     });
@@ -70,6 +72,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: AppColor.bg,
       body: Padding(
         padding: EdgeInsets.only(
@@ -85,7 +88,7 @@ class _MenuScreenState extends State<MenuScreen> {
             SizedBox(height: 3.h),
             textFormField(),
             SizedBox(height: 2.h),
-            listviwe(),
+            seen == true ? CircularProgressIndicator() : listviwe(),
             cText('Promotions'),
             offer(),
             SizedBox(height: 1.h),
@@ -203,68 +206,70 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   Widget offer() {
-    return Container(
-      height: 14.5.h,
-      width: 90.w,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: const LinearGradient(begin: Alignment.topCenter, colors: [
-            AppColor.blue,
-            AppColor.blue1,
-          ])),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 3.0.w),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(height: 0.2.h),
-                Text(
-                  '''Today's offers''',
-                  style: GoogleFonts.poppins(
-                      color: AppColor.white,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 15.sp),
-                ),
-                Text(
-                  'Free box of fries',
-                  style: GoogleFonts.poppins(
-                      color: AppColor.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 19.sp),
-                ),
-                Flexible(
-                  child: SizedBox(
-                    width: 53.w,
-                    // color: Colors.red,
-                    child: Text(
-                      'On all order above \$150',
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.poppins(
-                          color: AppColor.white,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 15.sp),
+    return SingleChildScrollView(
+      child: Container(
+        height: 14.5.h,
+        width: 90.w,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: const LinearGradient(begin: Alignment.topCenter, colors: [
+              AppColor.blue,
+              AppColor.blue1,
+            ])),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 3.0.w),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(height: 0.2.h),
+                  Text(
+                    '''Today's offers''',
+                    style: GoogleFonts.poppins(
+                        color: AppColor.white,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 15.sp),
+                  ),
+                  Text(
+                    'Free box of fries',
+                    style: GoogleFonts.poppins(
+                        color: AppColor.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 19.sp),
+                  ),
+                  Flexible(
+                    child: SizedBox(
+                      width: 53.w,
+                      // color: Colors.red,
+                      child: Text(
+                        'On all order above \$150',
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                            color: AppColor.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 15.sp),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 0.2.h),
-              ],
-            ),
-            // Card(
-            //   shape: RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.circular(15),
-            //   ),
-            //   child:
-            Image.asset(
-              'assets/image/French-fries.png',
-              height: 11.h,
-              width: 11.h,
-            ),
-            // ),
-          ],
+                  SizedBox(height: 0.2.h),
+                ],
+              ),
+              // Card(
+              //   shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(15),
+              //   ),
+              //   child:
+              Image.asset(
+                'assets/image/French-fries.png',
+                height: 11.h,
+                width: 11.h,
+              ),
+              // ),
+            ],
+          ),
         ),
       ),
     );
@@ -285,7 +290,7 @@ class _MenuScreenState extends State<MenuScreen> {
       child: Padding(
         padding: const EdgeInsets.all(0.0),
         child: GridView.builder(
-            shrinkWrap: true,
+            // shrinkWrap: true,
             itemCount: productCatogeryList.length,
             padding: EdgeInsets.zero,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -306,7 +311,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                 rating: productCatogeryList[index].rating,
                               ))),
                   child: Container(
-                    width: 10.w,
+                    width: 8.w,
                     // height: 17.h,
                     decoration: BoxDecoration(
                         color: Colors.black,
@@ -319,7 +324,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       children: [
                         SizedBox(height: 1.h),
                         CommonImage(
-                          height: 10.h,
+                          height: 9.h,
                           width: 27.5.w,
                           image: productCatogeryList[index].image.toString(),
                           color: AppColor.white60,
@@ -329,7 +334,7 @@ class _MenuScreenState extends State<MenuScreen> {
                           style: GoogleFonts.poppins(
                               color: AppColor.black,
                               fontWeight: FontWeight.w400,
-                              fontSize: 15.sp),
+                              fontSize: 13.sp),
                         ),
                         SizedBox(height: 1.5.h),
                         Padding(

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "47729247717",
+    "firebase_url": "https://food-app-6e21c-default-rtdb.firebaseio.com",
     "project_id": "food-app-6e21c",
     "storage_bucket": "food-app-6e21c.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "47729247717-7tiom6it9gui0vefp9vsrhe4qc44jker.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.logifox.food_app",
+            "certificate_hash": "8e584d8f9fe82ea73227226b2fc698a91ae6e1b9"
+          }
+        },
         {
           "client_id": "47729247717-v3i9g6mispfit1bl979t6pbuafu99r1s.apps.googleusercontent.com",
           "client_type": 3
@@ -29,6 +38,13 @@
             {
               "client_id": "47729247717-v3i9g6mispfit1bl979t6pbuafu99r1s.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "47729247717-idoqrkbtc1rho376tvthc5petaak6gor.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.logifox.food-app"
+              }
             }
           ]
         }
