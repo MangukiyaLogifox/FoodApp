@@ -4,7 +4,6 @@ import 'package:food_app/Screen/splesh_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'login_screen.dart';
 
 bool? _seen;

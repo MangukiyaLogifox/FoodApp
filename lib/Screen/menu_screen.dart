@@ -1,5 +1,5 @@
 // ignore: unused_import
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/Common/common_image.dart';
@@ -88,7 +88,8 @@ class _MenuScreenState extends State<MenuScreen> {
             SizedBox(height: 3.h),
             textFormField(),
             SizedBox(height: 2.h),
-            seen == true ? CircularProgressIndicator() : listviwe(),
+            // seen == true ? CircularProgressIndicator() :
+            listviwe(),
             cText('Promotions'),
             offer(),
             SizedBox(height: 1.h),
@@ -257,11 +258,6 @@ class _MenuScreenState extends State<MenuScreen> {
                   SizedBox(height: 0.2.h),
                 ],
               ),
-              // Card(
-              //   shape: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.circular(15),
-              //   ),
-              //   child:
               Image.asset(
                 'assets/image/French-fries.png',
                 height: 11.h,

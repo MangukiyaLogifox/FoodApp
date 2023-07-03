@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // ignore: unused_import
 import 'package:firebase_core/firebase_core.dart';
@@ -7,14 +8,17 @@ import 'package:food_app/Core/app_color.dart';
 import 'package:food_app/Screen/splesh_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 
 // ignore: must_be_immutable
 class OtpScreen extends StatefulWidget {
-  OtpScreen({super.key, this.number});
-  String? number;
+  OtpScreen({super.key, this.verificationId, this.phoneNumber});
+  String? verificationId;
+  String? phoneNumber;
+
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
@@ -70,9 +74,12 @@ class _OtpScreenState extends State<OtpScreen> {
           OTPTextField(
             isDense: true,
             controller: otp,
+            hasError: true,
             width: 80.w,
             keyboardType: TextInputType.phone,
-            otpFieldStyle: OtpFieldStyle(focusBorderColor: AppColor.darkIndigo),
+            otpFieldStyle: OtpFieldStyle(
+                focusBorderColor: AppColor.darkIndigo,
+                errorBorderColor: Colors.red),
             obscureText: false,
             inputFormatter: [
               LengthLimitingTextInputFormatter(6),
@@ -88,7 +95,15 @@ class _OtpScreenState extends State<OtpScreen> {
             },
             onCompleted: (pin) {
               print("Completed: " + pin);
-              signInWithPhoneNumber(widget.number.toString(), pin);
+              // signInWithPhoneNumber(widget.verificationId.toString(), pin);
+              if (widget.verificationId != null) {
+                PhoneAuthCredential credential = PhoneAuthProvider.credential(
+                    verificationId: widget.verificationId!,
+                    smsCode: otp.toString());
+                var res =
+                    FirebaseAuth.instance.signInWithCredential(credential);
+                print("RES::::::::::::${res.toString()}");
+              }
             },
           ),
           Align(
@@ -124,17 +139,25 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  FirebaseAuth auth = FirebaseAuth.instance;
-
-  Future<void> signInWithPhoneNumber(
-      String verificationId, String smsCode) async {
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: verificationId,
-      smsCode: smsCode,
-    );
-    await auth.signInWithCredential(credential);
-
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => SpleshScreen()));
-  }
+  // FirebaseAuth auth = FirebaseAuth.instance;
+  // Future signInWithPhoneNumber(String verificationId, String smsCode) async {
+  //   PhoneAuthCredential credential = PhoneAuthProvider.credential(
+  //     verificationId: verificationId,
+  //     smsCode: smsCode,
+  //   );
+  //   await auth.signInWithCredential(credential);
+  //   // ignore: use_build_context_synchronously
+  //   Navigator.pushReplacement(
+  //           context, MaterialPageRoute(builder: (context) => SpleshScreen()))
+  //       .catchError((e) {
+  //     ScaffoldMessenger.of(context)
+  //         .showSnackBar(SnackBar(content: Text('Invalid otp')));
+  //     Navigator.pop(context);
+  //   });
+  //   await FirebaseFirestore.instance
+  //       .collection("Users")
+  //       .add({"Number": widget.phoneNumber, "cart": []});
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   await prefs.setBool('login', true);
+  // }
 }

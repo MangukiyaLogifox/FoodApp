@@ -2,13 +2,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_app/Core/app_color.dart';
+import 'package:food_app/Screen/menu_screen.dart';
 import 'package:food_app/Screen/otp_screen.dart';
+import 'package:food_app/Screen/splesh_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 var dialCode = '+91';
-bool? _seen;
+// ignore: unused_element
 
 class LoginScren extends StatefulWidget {
   const LoginScren({super.key});
@@ -22,8 +25,10 @@ class _LoginScrenState extends State<LoginScren> {
   final formKey = GlobalKey<FormState>();
   TextEditingController phoneNumber = TextEditingController();
   bool visible = false;
+  bool show = false;
   var temp;
 
+  // ignore: annotate_overrides
   void dispose() {
     phoneNumber.dispose();
     super.dispose();
@@ -97,7 +102,8 @@ class _LoginScrenState extends State<LoginScren> {
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(10),
                   ],
-                  dropdownTextStyle: TextStyle(color: AppColor.darkIndigo),
+                  dropdownTextStyle:
+                      const TextStyle(color: AppColor.darkIndigo),
                   dropdownIconPosition: IconPosition.trailing,
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -108,10 +114,9 @@ class _LoginScrenState extends State<LoginScren> {
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
                             const BorderSide(color: AppColor.darkIndigo)),
-                    errorBorder: OutlineInputBorder(
+                    focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide:
-                            const BorderSide(color: AppColor.darkIndigo)),
+                        borderSide: const BorderSide(color: AppColor.red)),
                   ),
                   onCountryChanged: (value) {
                     dialCode = value.dialCode;
@@ -131,17 +136,24 @@ class _LoginScrenState extends State<LoginScren> {
             SizedBox(height: 1.9.h),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 1.9.h, horizontal: 30.w),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  primary: AppColor.darkIndigo),
+                primary: show == false
+                    ? AppColor.darkIndigo
+                    : AppColor.lightIndigo.withOpacity(0.5),
+                padding:
+                    EdgeInsets.symmetric(vertical: 1.9.h, horizontal: 30.w),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                // ignore: deprecated_member_use
+              ),
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  _verifyPhone();
+                  show == false ? _verifyPhone() : '';
+                  setState(() {
+                    show = true;
+                  });
                 }
               },
-              child: Text('Send OTP'),
+              child: const Text('Send OTP'),
             ),
             const Spacer(),
             Padding(
@@ -149,7 +161,7 @@ class _LoginScrenState extends State<LoginScren> {
               child: Container(
                 height: 130,
                 width: 380,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                     bottomRight: Radius.circular(130),
                     topRight: Radius.circular(4900),
@@ -165,42 +177,87 @@ class _LoginScrenState extends State<LoginScren> {
     );
   }
 
+  // _verifyPhone() async {
+  //   await FirebaseAuth.instance.verifyPhoneNumber(
+  //       phoneNumber: dialCode + phoneNumber.text,
+  //       verificationCompleted: (PhoneAuthCredential credential) async {
+  //         await FirebaseAuth.instance
+  //             .signInWithCredential(credential)
+  //             .then((value) async {
+  //           if (value.user != null) {
+  //             // ignore: avoid_print
+  //             print('user Loggins Succesfully');
+  //           }
+  //         });
+  //       },
+  //       verificationFailed: (FirebaseAuthException e) {
+  //         // ignore: avoid_print
+  //         print(e.message);
+  //       },
+  //       codeSent: (verificationId, resendingToken) {
+  //         setState(() {
+  //           verificationcode = verificationId;
+  //           // ignore: avoid_single_cascade_in_expression_statements
+  //           ScaffoldMessenger.of(context)
+  //               .showSnackBar(
+  //                   const SnackBar(content: Text('OTP send succesfully')))
+  //               .closed
+  //             ..then((value) => Navigator.pushReplacement(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                     builder: (context) => OtpScreen(
+  //                           verificationId: verificationId,
+  //                           phoneNumber: dialCode + phoneNumber.text,
+  //                         ))));
+  //           // ignore: avoid_print
+  //           print(
+  //               "calll::::::::::::::::::::::cfs4dqs56cf4s5d4fc5s4c5f::::::::::::${verificationId}");
+  //         });
+  //       },
+  //       codeAutoRetrievalTimeout: (String verificationID) {
+  //         setState(() {
+  //           verificationcode = verificationID;
+  //         });
+  //       },
+  //       timeout: const Duration(seconds: 60));
+  // }
+
   _verifyPhone() async {
+    var verificationId = '';
+    print("gdsgskjhsgijshgjshgioshghghshgshghsg");
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: dialCode + phoneNumber.text,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          await FirebaseAuth.instance
-              .signInWithCredential(credential)
-              .then((value) async {
-            if (value.user != null) {
-              print('user Loggins Succesfully');
-            }
-          });
+        timeout: Duration(seconds: 60),
+        verificationCompleted: (PhoneAuthCredential credential) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Verification completed")));
         },
         verificationFailed: (FirebaseAuthException e) {
-          print(e.message);
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(e.toString())));
         },
-        codeSent: (verificationId, resendingToken) {
+        codeSent: (String verificationID, int? resendingToken) {
           setState(() {
-            verificationcode = verificationId;
+            verificationId = verificationID;
+            print(verificationID);
             ScaffoldMessenger.of(context)
-                .showSnackBar(
-                    const SnackBar(content: Text('OTP send succesfully')))
+                .showSnackBar(SnackBar(content: Text("OTP Sent")))
                 .closed
-              ..then((value) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          OtpScreen(number: verificationId))));
-            print(
-                "calll::::::::::::::::::::::cfs4dqs56cf4s5d4fc5s4c5f::::::::::::${verificationId}");
+              ..then((value) => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => OtpScreen(
+                                  verificationId: verificationId,
+                                  phoneNumber: dialCode + phoneNumber.text,
+                                  // ),
+                                )))
+                  });
           });
         },
         codeAutoRetrievalTimeout: (String verificationID) {
-          setState(() {
-            verificationcode = verificationID;
-          });
-        },
-        timeout: Duration(seconds: 60));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Code expired")));
+        });
   }
 }
