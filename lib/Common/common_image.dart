@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // ignore: unused_import
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:food_app/Core/app_color.dart';
 
 // ignore: must_be_immutable
 class CommonImage extends StatefulWidget {
@@ -27,7 +28,8 @@ class _CommonImageState extends State<CommonImage> {
       ),
       child: CachedNetworkImage(
         imageUrl: widget.image.toString(),
-        placeholder: (context, url) => new CircularProgressIndicator(),
+        placeholder: (context, url) =>
+            new CircularProgressIndicator(color: AppColor.darkIndigo),
         errorWidget: (context, url, error) => new Icon(Icons.error),
       ),
     );

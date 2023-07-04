@@ -38,14 +38,11 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             debugShowCheckedModeBanner: false,
-            home: LoginScren());
-        // _seen == false
-        //     ? IntroductioneScreen()
-        //     : login == false
-        //         ? const LoginScren()
-        //         : SpleshScreen());
-        // MenuScreen()
-        // );
+            home: _seen == false
+                ? IntroductioneScreen()
+                : login == false
+                    ? const LoginScren()
+                    : SpleshScreen());
       },
     );
   }
