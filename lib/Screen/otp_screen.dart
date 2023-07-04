@@ -1,7 +1,7 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// ignore: unused_import
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_app/Core/app_color.dart';
@@ -11,13 +11,14 @@ import 'package:otp_text_field/style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:otp_text_field/otp_text_field.dart';
-import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 
 // ignore: must_be_immutable
 class OtpScreen extends StatefulWidget {
-  OtpScreen({super.key, this.verificationId, this.phoneNumber});
-  String? verificationId;
-  String? phoneNumber;
+  OtpScreen(
+      {super.key, this.verificationId, this.phoneNumber, this.resendingToken});
+  final String? verificationId;
+  final String? phoneNumber;
+  int? resendingToken;
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -27,8 +28,35 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   // ignore: override_on_non_overriding_member
   OtpFieldController otp = OtpFieldController();
-  var temp;
-  final bool autoFocus = false;
+  Timer? _timer;
+  int _start = 0;
+  bool error = false;
+  @override
+  void initState() {
+    startTimer();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer!.cancel();
+    super.dispose();
+  }
+
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    // ignore: unnecessary_new
+    _timer = new Timer.periodic(
+        oneSec,
+        (Timer timer) => setState(() {
+              if (_start >= 60) {
+                timer.cancel();
+              } else {
+                _start += 1;
+              }
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,12 +102,12 @@ class _OtpScreenState extends State<OtpScreen> {
           OTPTextField(
             isDense: true,
             controller: otp,
-            hasError: true,
+            hasError: error,
             width: 80.w,
             keyboardType: TextInputType.phone,
             otpFieldStyle: OtpFieldStyle(
-                focusBorderColor: AppColor.darkIndigo,
-                errorBorderColor: Colors.red),
+              focusBorderColor: AppColor.darkIndigo,
+            ),
             obscureText: false,
             inputFormatter: [
               LengthLimitingTextInputFormatter(6),
@@ -90,26 +118,56 @@ class _OtpScreenState extends State<OtpScreen> {
             ),
             spaceBetween: Checkbox.width,
             fieldStyle: FieldStyle.underline,
-            onChanged: (pin) {
-              print("Changed: " + pin);
-            },
-            onCompleted: (pin) {
-              print("Completed: " + pin);
-              // signInWithPhoneNumber(widget.verificationId.toString(), pin);
-              if (widget.verificationId != null) {
-                PhoneAuthCredential credential = PhoneAuthProvider.credential(
-                    verificationId: widget.verificationId!,
-                    smsCode: otp.toString());
-                var res =
-                    FirebaseAuth.instance.signInWithCredential(credential);
-                print("RES::::::::::::${res.toString()}");
+            onChanged: (pin) {},
+            onCompleted: (pin) async {
+              if (_start >= 60) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('code Expired')));
+              } else {
+                if (widget.verificationId != null) {
+                  AuthCredential credential = PhoneAuthProvider.credential(
+                      verificationId: widget.verificationId!, smsCode: pin);
+                  try {
+                    if (credential.providerId != '') {
+                      await FirebaseAuth.instance
+                          .signInWithCredential(credential)
+                          .then((value) {
+                        Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SpleshScreen()))
+                            .then((value) async {
+                          await FirebaseFirestore.instance
+                              .collection("Users")
+                              .add({"Number": widget.phoneNumber, "cart": []});
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setBool('login', true);
+                        });
+                      });
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Invalid otp')));
+                    setState(() {
+                      error = true;
+                    });
+                  }
+                }
               }
             },
           ),
           Align(
             alignment: Alignment.topRight,
             child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    otp.clear();
+                    _start = 0;
+                    startTimer();
+                    sendOTP();
+                  });
+                },
                 child: Text(
                   'Resend OTP',
                   style: GoogleFonts.poppins(
@@ -124,7 +182,7 @@ class _OtpScreenState extends State<OtpScreen> {
             child: Container(
               height: 130,
               width: 380,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   bottomRight: Radius.circular(130),
                   topRight: Radius.circular(4900),
@@ -139,25 +197,22 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  // FirebaseAuth auth = FirebaseAuth.instance;
-  // Future signInWithPhoneNumber(String verificationId, String smsCode) async {
-  //   PhoneAuthCredential credential = PhoneAuthProvider.credential(
-  //     verificationId: verificationId,
-  //     smsCode: smsCode,
-  //   );
-  //   await auth.signInWithCredential(credential);
-  //   // ignore: use_build_context_synchronously
-  //   Navigator.pushReplacement(
-  //           context, MaterialPageRoute(builder: (context) => SpleshScreen()))
-  //       .catchError((e) {
-  //     ScaffoldMessenger.of(context)
-  //         .showSnackBar(SnackBar(content: Text('Invalid otp')));
-  //     Navigator.pop(context);
-  //   });
-  //   await FirebaseFirestore.instance
-  //       .collection("Users")
-  //       .add({"Number": widget.phoneNumber, "cart": []});
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await prefs.setBool('login', true);
-  // }
+  sendOTP() async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: widget.phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {},
+      verificationFailed: (FirebaseAuthException e) {},
+      codeSent: (String verificationId, int? _resendToken) async {
+        verificationId = widget.verificationId!;
+        widget.resendingToken = _resendToken;
+      },
+      timeout: const Duration(seconds: 60),
+      forceResendingToken: widget.resendingToken,
+      codeAutoRetrievalTimeout: (String verificationId) {
+        verificationId = verificationId;
+      },
+    );
+    debugPrint("_verificationId: ${widget.verificationId}");
+    return true;
+  }
 }
