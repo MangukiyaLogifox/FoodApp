@@ -4,3 +4,8 @@ class ProductModel {
 
   ProductModel({this.image, this.name});
 }
+
+class UserModel {
+  String? number;
+  UserModel({this.number});
+}

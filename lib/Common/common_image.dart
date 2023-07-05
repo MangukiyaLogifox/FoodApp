@@ -29,7 +29,7 @@ class _CommonImageState extends State<CommonImage> {
       child: CachedNetworkImage(
         imageUrl: widget.image.toString(),
         placeholder: (context, url) =>
-            new CircularProgressIndicator(color: AppColor.darkIndigo),
+            const CircularProgressIndicator(color: AppColor.darkIndigo),
         errorWidget: (context, url, error) => new Icon(Icons.error),
       ),
     );

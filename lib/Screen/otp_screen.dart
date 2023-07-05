@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +24,11 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+  storePhoneNumber() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('phonenumber', widget.phoneNumber.toString());
+  }
+
   @override
   // ignore: override_on_non_overriding_member
   OtpFieldController otp = OtpFieldController();
@@ -137,12 +141,14 @@ class _OtpScreenState extends State<OtpScreen> {
                                 MaterialPageRoute(
                                     builder: (context) => SpleshScreen()))
                             .then((value) async {
-                          await FirebaseFirestore.instance
-                              .collection("Users")
-                              .add({"Number": widget.phoneNumber, "cart": []});
+                          // await FirebaseFirestore.instance
+                          //     .collection("Users")
+                          //     .doc(FirebaseAuth.instance.currentUser?.uid)
+                          //     .set({"Number": widget.phoneNumber, "cart": []});
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
                           await prefs.setBool('login', true);
+                          storePhoneNumber();
                         });
                       });
                     }

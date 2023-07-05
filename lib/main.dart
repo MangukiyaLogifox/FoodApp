@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
       builder: (context, orientation, deviceType) {
         return MaterialApp(
             theme: ThemeData(
-              textSelectionTheme: TextSelectionThemeData(
+              textSelectionTheme: const TextSelectionThemeData(
                 cursorColor: AppColor.darkIndigo,
               ),
             ),
