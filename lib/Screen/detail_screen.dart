@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // ignore: unused_import
 import 'package:food_app/Common/common_image.dart';
 import 'package:food_app/Core/app_color.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 // ignore: must_be_immutable
@@ -28,12 +31,23 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  var phoneNumber;
+  getPhoneNumber() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    phoneNumber = await prefs.getString('phonenumber');
+  }
+
   List photo = [
     'assets/image/Rectangle 11.png',
     'assets/image/Rectangle 13.png',
-    'assets/image/Rectangle 14.png'
+    'assets/image/Rectangle 14.png',
   ];
-  int increment = 1;
+  void initState() {
+    getPhoneNumber();
+    super.initState();
+  }
+
+  int qty = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,16 +72,15 @@ class _DetailScreenState extends State<DetailScreen> {
                 alignment: Alignment.center,
                 padding: EdgeInsets.all(5.sp),
                 height: 22.h,
-                // width: 18.5.w,
                 decoration: BoxDecoration(
                     image: DecorationImage(
                         image: imageProvider, fit: BoxFit.contain),
                     borderRadius: BorderRadius.circular(15)),
               ),
               placeholder: (context, url) =>
-                  CircularProgressIndicator(color: AppColor.lightIndigo),
+                  const CircularProgressIndicator(color: AppColor.lightIndigo),
             ),
-            Spacer(),
+            const Spacer(),
             productdetail()
           ],
         ),
@@ -139,9 +152,9 @@ class _DetailScreenState extends State<DetailScreen> {
                 const Spacer(),
                 InkWell(
                   onTap: () {
-                    if (increment > 0) {
+                    if (qty >= 0) {
                       setState(() {
-                        increment--;
+                        qty--;
                       });
                     }
                   },
@@ -151,7 +164,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   alignment: Alignment.center,
                   width: 10.w,
                   child: Text(
-                    '$increment',
+                    '$qty',
                     style:
                         TextStyle(fontSize: 2.3.h, color: AppColor.darkIndigo),
                   ),
@@ -159,7 +172,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      increment++;
+                      qty++;
                     });
                   },
                   child: cbutton(Icons.add),
@@ -226,7 +239,9 @@ class _DetailScreenState extends State<DetailScreen> {
                       primary: AppColor.darkIndigo,
                       padding: EdgeInsets.symmetric(
                           vertical: 1.5.h, horizontal: 17.w)),
-                  onPressed: () {},
+                  onPressed: () {
+                    addToCart();
+                  },
                   child: Text(
                     'Add to cart',
                     style: GoogleFonts.poppins(
@@ -251,7 +266,22 @@ class _DetailScreenState extends State<DetailScreen> {
               icon,
               size: 2.h,
             )));
+  }
 
-    // );
+  Future addToCart() async {
+    Map<String, dynamic> data = {
+      "image": widget.image.toString(),
+      "name": widget.name.toString(),
+      "price": widget.price.toString(),
+      "Qty": qty,
+    };
+    await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .update({
+      "cart": FieldValue.arrayUnion([data])
+    }).then((value) {
+      Navigator.pop(context);
+    });
   }
 }
